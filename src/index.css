@@ -1,0 +1,69 @@
+:root {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: #333;
+  background-color: #f9f9f9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #2355db;
+  text-decoration: none;
+}
+a:hover {
+  color: #1b3fa5;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f6f8fa;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  color: #222;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid #b3bee6;
+  padding: 0.6em 1.2em;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #2355db;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.25s, box-shadow 0.25s;
+}
+button:hover {
+  background-color: #1b3fa5;
+  box-shadow: 0 2px 8px rgba(35,85,219,0.2);
+}
+button:focus {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #1b3fa5;
+  }
+  button {
+    background-color: #2355db;
+  }
+}
