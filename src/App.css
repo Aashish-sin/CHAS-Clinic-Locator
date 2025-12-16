@@ -29,94 +29,17 @@
 }
 
 .page {
-  padding: 2rem 5vw;
+  padding: 2rem 30px;
   max-width: 1200px;
   margin: 0 auto;
   background: transparent;
-  min-height: calc(100vh - 150px); /* Adjust 150px based on nav/footer height */
   display: flex;
   flex-direction: column;
-}
-
-.clinic-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-  margin-top: 20px;
-}
-
-.clinic-card,
-.fav-card {
-  background: #fff;
-  padding: 24px 20px 20px 20px;
-  border-radius: 14px;
-  border: 1px solid #eaecef;
-  box-shadow: 0 2px 18px 0 rgba(39, 56, 88, 0.06);
-  transition: transform 0.15s, box-shadow 0.15s;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.clinic-card:hover,
-.fav-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 6px 32px 0 rgba(39, 56, 88, 0.09);
-}
-
-button {
-  margin-top: 10px;
-  padding: 12px 20px;
-  background: #2355db;
-  border: none;
-  color: #fff;
-  font-size: 1.02rem;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(80, 115, 206, 0.06);
-  transition: background 0.1s, box-shadow 0.16s;
-  outline: none;
-}
-button:hover,
-button:focus {
-  background: #1b3fa5;
-  box-shadow: 0 2px 16px rgba(55, 70, 130, 0.1);
-}
-button:active {
-  background: #14328a;
-}
-
-.tier-filter,
-select {
-  font-size: 1rem;
-  margin-bottom: 14px;
-  margin-top: 6px;
-}
-.tier-filter label {
-  margin-right: 10px;
-  font-weight: 500;
-}
-.tier-filter select {
-  padding: 8px 14px;
-  border-radius: 5px;
-  border: 1px solid #b3bee6;
-  font-size: 1rem;
-  margin-top: 2px;
-  background: #f6faff;
-  outline: none;
-}
-.tier-filter select:focus {
-  border-color: #2355db;
-  background: #e4ecfa;
-}
-
-h1 {
-  font-size: 2rem;
-  font-weight: 600;
 }
 
 @media (max-width: 700px) {
   .page {
-    padding: 18px 2vw;
+    padding: 18px 20px;
   }
   .clinic-list {
     gap: 15px;
@@ -146,4 +69,43 @@ h1 {
 .search-bar input:focus {
   border-color: #2355db;
   background: #e4ecfa;
+}
+
+.clinic-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.clinic-card h3 {
+  color: #2355db;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.clinic-card p {
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+
+.clinic-card button {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.clinic-card button:hover {
+  opacity: 0.9;
+}
+
+.clinic-card .card-content {
+  flex-grow: 1; /* Allows content to take up available space */
 }
