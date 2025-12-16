@@ -1,17 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function ClinicCard({ clinic, onSave }) {
+export default function ClinicCard({ clinic, onSave, isFavourited }) {
   const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await onSave(clinic);
-      if (!response.ok) {
+      const record = await onSave({
+        clinicId: clinic.properties.id,
+        name: clinic.properties.name,
+        address: clinic.properties.address,
+        tier: clinic.properties.tier,
+      });
+
+      if (!record) {
         alert("Failed to save to favourites. Please try again.");
         return;
       }
+
       alert("Saved to favourites successfully!");
     } catch (error) {
       alert("Failed to save to favourites. Please try again.");
@@ -20,19 +28,36 @@ export default function ClinicCard({ clinic, onSave }) {
     }
   };
 
+  const handleButtonClick = () => {
+    if (isFavourited) {
+      navigate("/favourites");
+    } else {
+      handleSave();
+    }
+  };
+
   return (
     <div className="clinic-card">
-      <h3>{clinic.properties?.name || "N/A"}</h3>
-      <p>{clinic.properties?.address || "N/A"}</p>
-      <p>Tier: {clinic.properties?.tier || "N/A"}</p>
+      <div className="card-content">
+        <h3>{clinic.properties?.name || "N/A"}</h3>
+        <p>{clinic.properties?.address || "N/A"}</p>
+        <p>Tier: {clinic.properties?.tier || "N/A"}</p>
+      </div>
 
       <Link to={`/clinic/${clinic.properties?.id || ""}`}>
         <button disabled={!clinic.properties?.id}>View Details</button>
       </Link>
 
       {onSave && clinic.properties?.id && (
-        <button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving..." : "Save to Favourites"}
+        <button
+          onClick={handleButtonClick}
+          disabled={saving && !isFavourited}
+        >
+          {saving
+            ? "Saving..."
+            : isFavourited
+            ? "View Favourites"
+            : "Save to Favourites"}
         </button>
       )}
     </div>

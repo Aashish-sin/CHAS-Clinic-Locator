@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ClinicCard from "../components/ClinicCard";
 import TierFilter from "../components/TierFilter";
-import { addFavourite } from "../api/airtable";
+import { addFavourite, getFavourites } from "../api/airtable";
 import { formatClinicData } from "../api/helpers";
 
 export default function Home() {
@@ -9,30 +9,46 @@ export default function Home() {
   const [tier, setTier] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
+  const [favouriteClinicIds, setFavouriteClinicIds] = useState([]);
 
   useEffect(() => {
     setError("");
-    fetch("/CHASClinics.geojson")
-      .then((res) => {
+    const loadData = async () => {
+      try {
+        const res = await fetch("/CHASClinics.geojson");
         if (!res.ok) {
           setError(`Failed to fetch clinics: ${res.status} ${res.statusText}`);
-          return { features: [] };
+          setClinics([]);
+          return;
         }
-        return res.json();
-      })
-      .then((data) => {
+        const data = await res.json();
         if (!data.features || !Array.isArray(data.features)) {
           setError("Malformed data: features array is missing.");
           setClinics([]);
-        } else {
-          const formattedClinics = formatClinicData(data.features);
-          setClinics(formattedClinics);
+          return;
         }
-      })
-      .catch((err) => {
+        const formattedClinics = formatClinicData(data.features);
+        setClinics(formattedClinics);
+
+        const favs = await getFavourites();
+        const favIds = favs.map((fav) => fav.fields.clinicId);
+        setFavouriteClinicIds(favIds);
+      } catch (err) {
         setError("Loading clinics failed: " + err.message);
-      });
+      }
+    };
+
+    loadData();
   }, []);
+
+  const handleSaveFavourite = async (clinicData) => {
+    const record = await addFavourite(clinicData);
+    if (record) {
+      setFavouriteClinicIds((prevIds) => [...prevIds, clinicData.clinicId]);
+      return record;
+    }
+    return null;
+  };
 
   const filtered = clinics.filter(
     (clinic) =>
@@ -61,7 +77,7 @@ export default function Home() {
 
       {error && <p style={{ color: "#c00", fontWeight: "bold" }}>{error}</p>}
 
-      <div className="clinic-list">
+      <div className="clinic-list grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
         {filtered.length === 0 ? (
           <p>No clinics found.</p>
         ) : (
@@ -69,7 +85,8 @@ export default function Home() {
             <ClinicCard
               key={clinic.properties.id}
               clinic={clinic}
-              onSave={addFavourite}
+              onSave={handleSaveFavourite}
+              isFavourited={favouriteClinicIds.includes(clinic.properties.id)}
             />
           ))
         )}

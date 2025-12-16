@@ -1,9 +1,8 @@
-// src/api/airtable.js
 const API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
 const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
 const TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME;
 
-const API_URL = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`;
+const API_URL = `https://api.airtable.com/v0/appCbZVBsHUe52gqU/Table%201`;
 
 const headers = {
   "Content-Type": "application/json",
@@ -23,19 +22,35 @@ export async function getFavourites() {
   }
 }
 
-export async function addFavourite(favouriteFields) {
+export async function addFavourite({ clinicId, name, address, tier }) {
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: headers,
-      body: JSON.stringify({ fields: favouriteFields }),
+      headers,
+      body: JSON.stringify({
+        records: [
+          {
+            fields: {
+              clinicId,
+              name,
+              address,
+              tier,
+            },
+          },
+        ],
+      }),
     });
+
     if (!res.ok) {
+      const error = await res.json();
+      console.error("Airtable error:", error);
       return null;
     }
+
     const data = await res.json();
-    return data;
+    return data.records[0];
   } catch (error) {
+    console.error(error);
     return null;
   }
 }
