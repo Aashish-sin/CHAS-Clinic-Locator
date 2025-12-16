@@ -3,7 +3,8 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ClinicDetails from "./pages/ClinicDetails";
 import Favourites from "./pages/Favourites";
-import './App.css';
+import "./App.css";
+import "./index.css";
 
 export default function App() {
   return (
@@ -18,7 +19,6 @@ export default function App() {
     </Router>
   );
 }
-
 
 /*
 import { useEffect, useState } from "react";

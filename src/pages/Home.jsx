@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import ClinicCard from "../components/ClinicCard";
 import TierFilter from "../components/TierFilter";
 import { addFavourite } from "../api/airtable";
-import { runOnce } from "../api/guard";
 import { formatClinicData } from "../api/helpers";
 
 export default function Home() {
@@ -12,7 +11,6 @@ export default function Home() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!runOnce("loadClinics")) return;
     setError("");
     fetch("/CHASClinics.geojson")
       .then((res) => {
@@ -23,13 +21,11 @@ export default function Home() {
         return res.json();
       })
       .then((data) => {
-        console.log("Fetched data:", data); // Debug log for fetched data
         if (!data.features || !Array.isArray(data.features)) {
           setError("Malformed data: features array is missing.");
           setClinics([]);
         } else {
           const formattedClinics = formatClinicData(data.features);
-          console.log("Formatted clinics:", formattedClinics); // Debug log for formatted clinics
           setClinics(formattedClinics);
         }
       })
@@ -48,8 +44,6 @@ export default function Home() {
       clinic.properties.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log("Filtered clinics:", filtered); // Debug log for filtered clinics
-
   return (
     <div className="page">
       <h1>CHAS Clinic Search</h1>
@@ -65,7 +59,7 @@ export default function Home() {
         />
       </div>
 
-      {error && <p style={{color:'#c00',fontWeight:'bold'}}>{error}</p>}
+      {error && <p style={{ color: "#c00", fontWeight: "bold" }}>{error}</p>}
 
       <div className="clinic-list">
         {filtered.length === 0 ? (
