@@ -2,29 +2,30 @@ const parseDescription = (description) => {
   if (!description || typeof description !== "string") return {};
 
   const properties = {};
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(description, "text/html");
 
-  const regex = /<th[^>]*>([^<]+)<\/th>\s*<td[^>]*>([^<]*)<\/td>/g;
-  const matches = [...description.matchAll(regex)];
+  const rows = doc.querySelectorAll('tr');
 
-  for (const match of matches) {
-    const key = match[1]?.trim();
-    const value = match[2]?.trim();
-    if (key && !key.includes("Attributes")) {
+  rows.forEach(row => {
+    const key = row.querySelector('th')?.textContent?.trim();
+    const value = row.querySelector('td')?.textContent?.trim();
+
+    if (key && value && !key.includes("Attributes")) {
       properties[key] = value;
     }
-  }
+  });
 
   return properties;
 };
 
 export const formatClinicData = (features) => {
   return features
-    .map((feature, idx) => {
+    .map((feature) => {
       if (!feature.properties || !feature.properties.Description) {
         return null;
       }
       const properties = parseDescription(feature.properties.Description);
-
       const id = properties.HCI_CODE;
       const name = properties.HCI_NAME;
       if (!id || !name) {
@@ -67,15 +68,17 @@ export const formatClinicData = (features) => {
     .filter(Boolean);
 };
 
-export const searchByAddress = (features, searchTerm) => {
-  if (!searchTerm || typeof searchTerm !== "string") {
-    return [];
-  }
-
-  const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
-  return features.filter((feature) => {
-    const address = feature?.properties?.address || "";
-    return address.toLowerCase().includes(lowerCaseSearchTerm);
-  });
+export const getDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
 };

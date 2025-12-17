@@ -6,6 +6,7 @@ export default function Navbar() {
       <div className="nav-inner">
         <Link to="/">Home</Link>
         <Link to="/favourites">Favourites</Link>
+        <Link to="/map">Map</Link>
       </div>
     </nav>
   );

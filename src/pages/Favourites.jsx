@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getFavourites, deleteFavourite } from "../api/airtable";
 
 export default function Favourites() {
@@ -36,11 +37,18 @@ export default function Favourites() {
       {favourites.length === 0 && <p>No favourites yet.</p>}
       <div className="clinic-list">
         {favourites.map((fav) => (
-          <div key={fav.id} className="fav-card">
-            <h3>{fav.fields.name}</h3>
-            <p>{fav.fields.address}</p>
-            <p>Tier: {fav.fields.tier}</p>
-            <button onClick={() => handleDelete(fav.id)}>Remove</button>
+          <div key={fav.id} className="clinic-card">
+            <div className="card-content">
+              <h3>{fav.fields.name}</h3>
+              <p>{fav.fields.address}</p>
+              <p>Tier: {fav.fields.tier}</p>
+            </div>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Link to={`/clinic/${fav.fields.clinicId}`} style={{ width: "100%" }}>
+                <button>View Details</button>
+              </Link>
+              <button onClick={() => handleDelete(fav.id)}>Remove</button>
+            </div>
           </div>
         ))}
       </div>

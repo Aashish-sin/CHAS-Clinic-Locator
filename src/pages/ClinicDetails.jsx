@@ -1,27 +1,23 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { runOnce } from "../api/guard";
-import { formatClinicData } from "../api/helpers";
+import { useParams, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../context/DataContext";
 
 export default function ClinicDetails() {
   const { id } = useParams();
-  const [clinic, setClinic] = useState(null);
+  const navigate = useNavigate();
+  const { clinics, loading, error } = useContext(DataContext);
 
-  useEffect(() => {
-    if (!runOnce(`clinic-${id}`)) return;
+  if (loading) return <p>Loading clinic details...</p>;
+  if (error) return <p style={{ color: "#c00" }}>Error: {error}</p>;
 
-    fetch("/CHASClinics.geojson")
-      .then((res) => res.json())
-      .then((data) => {
-        const formattedClinics = formatClinicData(data.features);
-        const foundClinic = formattedClinics.find(
-          (c) => c.properties.HCI_CODE?.toString() === id
-        );
-        setClinic(foundClinic || null);
-      });
-  }, [id]);
+  const clinic = clinics.find((c) => c.properties.HCI_CODE?.toString() === id);
 
-  if (!clinic) return <p>Loading...</p>;
+  if (!clinic) return <p>Clinic not found.</p>;
+
+  const handleViewOnMap = () => {
+    const [lon, lat] = clinic.geometry.coordinates;
+    navigate(`/map?lat=${lat}&lon=${lon}`);
+  };
 
   return (
     <div className="page">
@@ -30,6 +26,9 @@ export default function ClinicDetails() {
       <p><strong>Tier:</strong> {clinic.properties.tier}</p>
       <p><strong>Postal Code:</strong> {clinic.properties.postalcode}</p>
       <p><strong>Telephone:</strong> {clinic.properties.telephone}</p>
+      <button onClick={handleViewOnMap} style={{ marginTop: "20px", width: "fit-content" }}>
+        View on Map
+      </button>
     </div>
   );
 }

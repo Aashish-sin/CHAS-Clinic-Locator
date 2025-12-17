@@ -1,44 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ClinicCard from "../components/ClinicCard";
 import TierFilter from "../components/TierFilter";
 import { addFavourite, getFavourites } from "../api/airtable";
-import { formatClinicData } from "../api/helpers";
+import { getDistance } from "../api/helpers";
+import { DataContext } from "../context/DataContext";
 
 export default function Home() {
-  const [clinics, setClinics] = useState([]);
+  const { clinics, loading, error: contextError } = useContext(DataContext);
+
+  const [displayedClinics, setDisplayedClinics] = useState([]);
   const [tier, setTier] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [error, setError] = useState("");
+  const [locationError, setLocationError] = useState("");
   const [favouriteClinicIds, setFavouriteClinicIds] = useState([]);
 
   useEffect(() => {
-    setError("");
-    const loadData = async () => {
-      try {
-        const res = await fetch("/CHASClinics.geojson");
-        if (!res.ok) {
-          setError(`Failed to fetch clinics: ${res.status} ${res.statusText}`);
-          setClinics([]);
-          return;
-        }
-        const data = await res.json();
-        if (!data.features || !Array.isArray(data.features)) {
-          setError("Malformed data: features array is missing.");
-          setClinics([]);
-          return;
-        }
-        const formattedClinics = formatClinicData(data.features);
-        setClinics(formattedClinics);
+    setDisplayedClinics(clinics);
+  }, [clinics]);
 
-        const favs = await getFavourites();
-        const favIds = favs.map((fav) => fav.fields.clinicId);
-        setFavouriteClinicIds(favIds);
-      } catch (err) {
-        setError("Loading clinics failed: " + err.message);
-      }
+  useEffect(() => {
+    const loadFavourites = async () => {
+      const favs = await getFavourites();
+      const favIds = favs.map((fav) => fav.fields.clinicId);
+      setFavouriteClinicIds(favIds);
     };
-
-    loadData();
+    loadFavourites();
   }, []);
 
   const handleSaveFavourite = async (clinicData) => {
@@ -50,7 +36,34 @@ export default function Home() {
     return null;
   };
 
-  const filtered = clinics.filter(
+  const sortByLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setLocationError("");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const sorted = [...displayedClinics]
+          .map((clinic) => {
+            const [clinicLon, clinicLat] = clinic.geometry.coordinates;
+            const distance = getDistance(latitude, longitude, clinicLat, clinicLon);
+            return { ...clinic, distance };
+          })
+          .sort((a, b) => a.distance - b.distance);
+        setDisplayedClinics(sorted);
+      },
+      () => {
+        setLocationError(
+          "Could not get your location. Please enable location services."
+        );
+      }
+    );
+  };
+
+  const filtered = displayedClinics.filter(
     (clinic) =>
       clinic &&
       clinic.properties &&
@@ -59,6 +72,8 @@ export default function Home() {
       (tier === "all" ? true : clinic.properties.tier === tier) &&
       clinic.properties.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) return <p>Loading clinics...</p>;
 
   return (
     <div className="page">
@@ -73,12 +88,16 @@ export default function Home() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button onClick={sortByLocation}>Find Near Me</button>
       </div>
 
-      {error && <p style={{ color: "#c00", fontWeight: "bold" }}>{error}</p>}
+      {contextError && <p style={{ color: "#c00", fontWeight: "bold" }}>Error: {contextError}</p>}
+      {locationError && (
+        <p style={{ color: "#c00", fontWeight: "bold" }}>{locationError}</p>
+      )}
 
       <div className="clinic-list grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
-        {filtered.length === 0 ? (
+        {filtered.length === 0 && !loading ? (
           <p>No clinics found.</p>
         ) : (
           filtered.map((clinic) => (
@@ -94,3 +113,4 @@ export default function Home() {
     </div>
   );
 }
+

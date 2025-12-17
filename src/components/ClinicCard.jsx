@@ -42,6 +42,11 @@ export default function ClinicCard({ clinic, onSave, isFavourited }) {
         <h3>{clinic.properties?.name || "N/A"}</h3>
         <p>{clinic.properties?.address || "N/A"}</p>
         <p>Tier: {clinic.properties?.tier || "N/A"}</p>
+        {clinic.distance && (
+          <p>
+            <strong>Distance:</strong> {clinic.distance.toFixed(2)} km
+          </p>
+        )}
       </div>
 
       <Link to={`/clinic/${clinic.properties?.id || ""}`}>

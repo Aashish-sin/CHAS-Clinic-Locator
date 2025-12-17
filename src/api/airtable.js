@@ -42,15 +42,13 @@ export async function addFavourite({ clinicId, name, address, tier }) {
     });
 
     if (!res.ok) {
-      const error = await res.json();
-      console.error("Airtable error:", error);
+      await res.json();
       return null;
     }
 
     const data = await res.json();
     return data.records[0];
   } catch (error) {
-    console.error(error);
     return null;
   }
 }
