@@ -13,7 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reset + global layout */
 * {
   box-sizing: border-box;
 }
@@ -24,7 +23,6 @@ body {
   min-height: 100vh;
 }
 
-/* Default link styles */
 a {
   font-weight: 500;
   color: #2355db;
@@ -35,14 +33,12 @@ a:hover {
   color: #1b3fa5;
 }
 
-/* Headings */
 h1 {
   font-size: 2.5rem;
   line-height: 1.2;
   color: #000;
 }
 
-/* Buttons */
 button {
   border-radius: 8px;
   border: 1px solid #b3bee6;
@@ -65,7 +61,6 @@ button:focus {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Light mode preference */
 @media (prefers-color-scheme: light) {
   :root {
     color: #111;

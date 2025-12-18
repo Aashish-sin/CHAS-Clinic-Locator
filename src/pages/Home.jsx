@@ -49,7 +49,12 @@ export default function Home() {
         const sorted = [...displayedClinics]
           .map((clinic) => {
             const [clinicLon, clinicLat] = clinic.geometry.coordinates;
-            const distance = getDistance(latitude, longitude, clinicLat, clinicLon);
+            const distance = getDistance(
+              latitude,
+              longitude,
+              clinicLat,
+              clinicLon
+            );
             return { ...clinic, distance };
           })
           .sort((a, b) => a.distance - b.distance);
@@ -65,12 +70,10 @@ export default function Home() {
 
   const filtered = displayedClinics.filter(
     (clinic) =>
-      clinic &&
-      clinic.properties &&
-      clinic.properties.id &&
-      clinic.properties.name &&
       (tier === "all" ? true : clinic.properties.tier === tier) &&
-      clinic.properties.address.toLowerCase().includes(searchTerm.toLowerCase())
+      clinic.properties.address
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   if (loading) return <p>Loading clinics...</p>;
@@ -91,7 +94,11 @@ export default function Home() {
         <button onClick={sortByLocation}>Find Near Me</button>
       </div>
 
-      {contextError && <p style={{ color: "#c00", fontWeight: "bold" }}>Error: {contextError}</p>}
+      {contextError && (
+        <p style={{ color: "#c00", fontWeight: "bold" }}>
+          Error: {contextError}
+        </p>
+      )}
       {locationError && (
         <p style={{ color: "#c00", fontWeight: "bold" }}>{locationError}</p>
       )}
@@ -102,10 +109,12 @@ export default function Home() {
         ) : (
           filtered.map((clinic) => (
             <ClinicCard
-              key={clinic.properties.id}
+              key={clinic.properties.HCI_CODE}
               clinic={clinic}
               onSave={handleSaveFavourite}
-              isFavourited={favouriteClinicIds.includes(clinic.properties.id)}
+              isFavourited={favouriteClinicIds.includes(
+                clinic.properties.HCI_CODE
+              )}
             />
           ))
         )}
@@ -113,4 +122,3 @@ export default function Home() {
     </div>
   );
 }
-

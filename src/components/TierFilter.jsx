@@ -1,13 +1,14 @@
 export default function TierFilter({ selectedTier, onChange }) {
   const tierColors = {
-    All: "#000",
-    Green: "green",
-    Orange: "orange",
-    Blue: "blue",
+    all: "black",
+    Green: "#006400", 
+    Orange: "#C25400", 
+    Blue: "#0000FF", 
   };
 
   const selectStyle = {
-    color: tierColors[selectedTier] || tierColors.All,
+    color: tierColors[selectedTier] || tierColors.all,
+    backgroundColor: "#fff", 
   };
 
   return (
@@ -18,7 +19,7 @@ export default function TierFilter({ selectedTier, onChange }) {
         onChange={(e) => onChange(e.target.value)}
         style={selectStyle}
       >
-        <option value="all" style={{ color: tierColors.All }}>
+        <option value="all" style={{ color: tierColors.all }}>
           All
         </option>
         <option value="Green" style={{ color: tierColors.Green }}>

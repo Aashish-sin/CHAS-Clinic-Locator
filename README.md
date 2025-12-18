@@ -1,6 +1,6 @@
 # CHAS Clinic Finder
 
-A simple and fast web application to find Community Health Assist Scheme (CHAS) clinics in Singapore. Users can search for clinics by address, filter them by their CHAS tier (Blue, Orange, or Green), and save their favourite clinics for easy access. There is also a map feature that will show the locations of the clinics based on the co-ordinates found in the API.
+A simple and fast web application to find Community Health Assist Scheme (CHAS) clinics in Singapore. Users can search for clinics by address, filter them by their CHAS tier (Blue, Orange, or Green), and save their favourite clinics for easy access. There is also a map feature that will show the locations of the clinics based on the co-ordinates found in the API. Calculations done for the use of function 'Find near me' are done thru the use of the Haversine Formula.
 
 ## Introduction
 
@@ -16,61 +16,58 @@ A publicly deployed version of the app is not yet available. To run the project 
 
 ## Technologies Used
 
-*   **JavaScript**
-*   **React**
-*   **React Router**
-*   **Vite**
+- **JavaScript**
+- **React**
+- **React Router**
+- **Vite**
+- **Leaflet**
 
-## component tree
+## Screenshot of Application
 
-public
-|CHASClinics.geojson
-src
-|api
- |airtable.js
- |helpers.js
-|components
- |ClinicCard.jsx
- |Navbar.jsx
- |TierFilter.jsx
-|context
- |DataContext.jsx
-|pages
- |ClinicDetails.jsx
- |Favourites.jsx
- |Home.jsx
- |Map.jsx
-|App.jsx
-|App.css
-|index.css
-|main.jsx
-.env
-.gitattributes
-.gitignore
-eslint.config.js
-index.html
-package-lock.json
-package.json
-README.md
-vite.config.js
+![alt text]({C59D9381-1F8B-4442-A545-D6909ED4685B}.png)
+
+## Component Tree
+
+```
+App
+└── DataProvider
+    └── Router
+        ├── Navbar
+        └── Routes
+            ├── Route (path="/")
+            │   └── Home
+            │       ├── TierFilter
+            │       └── ClinicCard
+            ├── Route (path="/clinic/:id")
+            │   └── ClinicDetails
+            ├── Route (path="/favourites")
+            │   └── Favourites
+            └── Route (path="/map")
+                └── Map
+```
 
 ## all environment variables
 
-
+```
+VITE_AIRTABLE_API_KEY=patLFoKDyQ5eu232J.d6a7d966d4753f25aadc2d993f8e1651a6b4662b022ff7e45edb0fd480cd3b7a
+VITE_AIRTABLE_BASE_ID=appCbZVBsHUe52gqU
+VITE_AIRTABLE_TABLE_NAME=Favourties
+```
 
 ## airtable columns
 
-clinicId
-name
-address
-tier
+```
+- clinicId
+- name
+- address
+- tier
+```
 
 ## Citation
 
-*   Ministry of Health. (2023). *CHAS Clinics (2024)* [Dataset]. data.gov.sg. Retrieved December 11, 2025 from https://data.gov.sg/datasets/d_548c33ea2d99e29ec63a7cc9edcccedc/view
+- Ministry of Health. (2023). _CHAS Clinics (2024)_ [Dataset]. data.gov.sg. Retrieved December 11, 2025 from https://data.gov.sg/datasets/d_548c33ea2d99e29ec63a7cc9edcccedc/view
 
 ## Next Steps
 
-*   **User Accounts:** Implement user authentication to allow users to sync their favourites across devices.
-*   **Advanced Filtering:** Add more filtering options, such as by specific services offered.
-*   **Clinic Details Enhancement:** Add more details to the clinic details page, such as opening hours.
+- **User Accounts:** Implement user authentication to allow users to sync their favourites across devices.
+- **Advanced Filtering:** Add more filtering options and search types, such as name of clinic.
