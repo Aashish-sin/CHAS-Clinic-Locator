@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { useMapEvents } from "react-leaflet";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
