@@ -49,9 +49,7 @@ App
 ## all environment variables
 
 ```
-VITE_AIRTABLE_API_KEY=patLFoKDyQ5eu232J.d6a7d966d4753f25aadc2d993f8e1651a6b4662b022ff7e45edb0fd480cd3b7a
-VITE_AIRTABLE_BASE_ID=appCbZVBsHUe52gqU
-VITE_AIRTABLE_TABLE_NAME=Favourties
+Please contact for more information
 ```
 
 ## airtable columns
